@@ -1,11 +1,17 @@
 import React from 'react';
 import AppLayout from "../components/AppLayout";
+import Head from 'next/head';
 
 const Profile = () => {
     return (
-        <AppLayout>
-            <div>내 프로필</div>
-        </AppLayout>
+        <>
+            <Head>
+                <title>내 프로필 | Nodebird</title>
+            </Head>
+            <AppLayout>
+                <div>내 프로필</div>
+            </AppLayout>
+        </>
     );
 }
 
