@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Avatar ,Button, Card} from 'antd';
 
+// eslint-disable-next-line react/prop-types
 const UserProfile = ({setisLoggedIn}) => {
 
     const onLogOut = useCallback(()=>{

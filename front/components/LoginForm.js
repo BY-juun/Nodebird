@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
+import propTypes from 'prop-types';
+import useInput from '../hooks/useInput';
 
 const ButtonWrapper = styled.div`
     margin-top : 10px;
@@ -10,19 +12,13 @@ const FormWrapper = styled(Form)`
     padding : 10px;
 `
 
+// eslint-disable-next-line react/prop-types
 const LoginForm = ({setisLoggedIn}) => {
-    const [id, setId] = useState('');
-    const [password, setPassword] = useState('');
+    
+    const [id, onChangeId] = useInput('');
+    const [password, onChangePassword] = useInput('');
 
-    const onChangeId = useCallback((e) => { //Component의 props로 넘겨주는 함수를 usecallback사용!
-        setId(e.target.value);
-    }, []);
-
-    const onChangePassword = useCallback((e) => { //Component의 props로 넘겨주는 함수를 usecallback사용!
-        setPassword(e.target.value);
-    }, []);
-
-    const onSubmitForm = useCallback((e) => {
+    const onSubmitForm = useCallback(() => {
         console.log(id,password);
         setisLoggedIn(true);
     },[id,password]);
@@ -52,6 +48,11 @@ const LoginForm = ({setisLoggedIn}) => {
 
         </FormWrapper>
     );
+};
+
+
+LoginForm.propTypes = {
+    setisLoggedIn : propTypes.func.isRequired,
 };
 
 export default LoginForm;

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 //page의 공통 부분 처리
 import React from 'react';
 import 'antd/dist/antd.css';
