@@ -8,13 +8,29 @@ const ErrorMessage = styled.div`
     color : red;
 `;
 
+const SignupButton = styled.div`
+    margin-top : 10px;
+`;
+
 const Signup = () => {
 
-    const [id, onChangeId] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
     const [password, onChangePassword] = useInput('');
     
-    
+    const [id , setId] = useState('');
+    const [idError,setIdError] = useState(false);
+    const onChangeId = useCallback((e)=>{
+        setId(e.target.value);
+        if(id.length<4 && id.length>-1)
+        {
+            setIdError(true);
+        }
+        else if(id.length === -1 || id.length >= 4)
+        {
+            setIdError(false);
+        }
+    },[id]);
+
     const [passwordcheck, setPasswordCheck] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const onChangePasswordCheck = useCallback((e) => {
@@ -30,6 +46,10 @@ const Signup = () => {
     },[])
 
     const onSubmitForm = useCallback(() => { //e.preventDefault안해도 된다. 안에서 자동으로 이루어짐
+        if(id.length<4 && id.length>-1)
+        {
+            return setIdError(true);
+        }
         if(password !== passwordcheck) 
         {
             return setPasswordError(true);
@@ -39,7 +59,7 @@ const Signup = () => {
             return setTermError(true);
         }
         console.log(id, nickname, password)
-    },[password,passwordcheck, term]);
+    },[id,password,passwordcheck, term]);
 
     return (
         <>
@@ -52,6 +72,7 @@ const Signup = () => {
                         <label htmlFor="used-id">아이디</label>
                         <br />
                         <Input name="user-id" value={id} required onChange={onChangeId} />
+                        {idError && <ErrorMessage>아이디는 5글자이상이어야 합니다.</ErrorMessage>}
                     </div>
                     <div>
                         <label htmlFor="used-nick">닉네임</label>
@@ -75,9 +96,9 @@ const Signup = () => {
                         <Checkbox name = "user-term" checked = {term} onChange = {onChangeTerm}>약관동의하셔야 합니다</Checkbox>
                         {termError && <ErrorMessage>약관에 동의하셔야 합니다</ErrorMessage>}
                     </div>
-                    <div style ={{marginTop : 10}}>
+                    <SignupButton>
                         <Button type = "primary" htmlType = "submit">가입하기</Button>
-                    </div>
+                    </SignupButton>
                 </Form>
             </AppLayout>
         </>
