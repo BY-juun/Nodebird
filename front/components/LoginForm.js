@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import propTypes from 'prop-types';
 import useInput from '../hooks/useInput';
 import { useDispatch } from 'react-redux';
-import {loginAction} from '../reducers'
+import {loginAction} from '../reducers/user'
 
 const LoginButton = styled(Button)`
     margin-right : 10px;

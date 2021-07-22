@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Avatar ,Button, Card} from 'antd';
 import { useDispatch } from 'react-redux';
-import {logoutAction} from '../reducers'
+import {logoutAction} from '../reducers/user'
 // eslint-disable-next-line react/prop-types
 const UserProfile = () => {
 
