@@ -52,7 +52,6 @@ const LoginForm = () => {
                     loading={false}>로그인</LoginButton>
                 <Link href="/signup"><a><Button>회원가입</Button></a></Link>
             </ButtonWrapper>
-
         </FormWrapper>
     );
 };
