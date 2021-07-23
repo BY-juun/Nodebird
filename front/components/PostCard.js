@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { Button, Card, Image, Popover } from 'antd';
+import { Button, Card, Image, Popover,List,Comment } from 'antd';
 import PropTypes, { object } from 'prop-types';
 import { Content } from 'antd/lib/layout/layout';
-import { EllipsisOutlined, HeartOutlined, MessageOutlined, RetweetOutlined,HeartTwoTone } from '@ant-design/icons';
+import { EllipsisOutlined, HeartOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from '@ant-design/icons';
 import Avatar from 'antd/lib/avatar/avatar';
 import { useSelector } from 'react-redux';
 import PostImages from './PostImages';
+import CommentForm from './CommentForm';
+import PostCardContent from './PostCardContent';
 
 const PostCard = ({ post }) => {
     const { me } = useSelector((state) => state.user);
@@ -48,15 +50,31 @@ const PostCard = ({ post }) => {
                 <Card.Meta
                     avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                     title={post.User.nickname}
-                    description={post.content}
+                    description={<PostCardContent postData = {post.content} />}
                 />
             </Card>
             {commentFormOpened && (
                 <div>
-                    댓글부분
+                    <CommentForm post={post} />
+                    {/*게시글을 넘겨주는 이유는 댓글이 어떤 게시글 소속인지 표시하기 위해*/}
+                    <List
+                        header={`${post.Comments.length}개의 댓글`}
+                        itemLayout="horizontal"
+                        dataSource={post.Comments}
+                        renderItem={(item) => (
+                            <li>
+                                <Comment
+                                    author={item.User.nickname}
+                                    avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                                    content={item.content}
+                                />
+                            </li>
+                        )}
+                    />
+  
                 </div>
             )}
-            {/*<CommentForm />*/}
+
             {/*<Comments />*/}
         </div>
     );
