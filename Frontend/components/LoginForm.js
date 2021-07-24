@@ -4,7 +4,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import useInput from '../hooks/useInput';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {loginRequsetAction} from '../reducers/user'
 
 const LoginButton = styled(Button)`
@@ -21,7 +21,7 @@ const FormWrapper = styled(Form)`
 // eslint-disable-next-line react/prop-types
 const LoginForm = () => {
     const dispatch = useDispatch();
-    
+    const {isLoggingIn} = useSelector((state)=>state.user);
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
 
@@ -49,7 +49,7 @@ const LoginForm = () => {
             <ButtonWrapper>
                 <LoginButton type="primary"
                     htmlType="submit"
-                    loading={false}>로그인</LoginButton>
+                    loading={isLoggingIn}>로그인</LoginButton>
                 <Link href="/signup"><a><Button>회원가입</Button></a></Link>
             </ButtonWrapper>
         </FormWrapper>
