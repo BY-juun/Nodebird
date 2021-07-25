@@ -1,30 +1,48 @@
-import { Form, Button, Input } from "antd";
-import { useCallback, useState } from "react";
+import { Button, Form, Input } from 'antd';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+
+import useInput from '../hooks/useInput';
+import { ADD_COMMENT_REQUEST } from '../reducers/post';
 
 const CommentForm = ({ post }) => {
-    const [commentText, setCommentText] = useState('');
+  const dispatch = useDispatch();
+  const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
+  const id = useSelector((state) => state.user.me?.id);
+  const [commentText, onChangeCommentText, setCommentText] = useInput('');
 
-    const onSubmitComment = useCallback(() => {
-        console.log(commentText);
-    }, [commentText]);
+  useEffect(() => {
+    if (addCommentDone) {
+      setCommentText('');
+    }
+  }, [addCommentDone]);
 
-    const onChangeCommentText = useCallback((e) => {
-        setCommentText(e.target.value);
-    }, []);
+  const onSubmitComment = useCallback(() => {
+    dispatch({
+      type: ADD_COMMENT_REQUEST,
+      data: { content: commentText, userId: id, postId: post.id },
+    });
+  }, [commentText, id]);
 
-    return (
-        <Form onFinish={onSubmitComment}>
-            <Form.Item style={{ position: 'relative', margin: 0 }}>
-                <Input.TextArea rows={4} value={commentText} onChange={onChangeCommentText} />
-                <Button style={{ position: 'absolute', right: 0, bottom: -40 }} type="primary" htmlType="submit">삐약</Button>
-            </Form.Item>
-        </Form>
-    );
+  return (
+    <Form onFinish={onSubmitComment}>
+      <Form.Item style={{ position: 'relative', margin: 0 }}>
+        <Input.TextArea rows={4} value={commentText} onChange={onChangeCommentText} />
+        <Button
+          style={{ position: 'absolute', right: 0, bottom: -40 }}
+          type="primary"
+          htmlType="submit"
+          loading={addCommentLoading}
+        >삐약
+        </Button>
+      </Form.Item>
+    </Form>
+  );
 };
 
 CommentForm.propTypes = {
-    post: PropTypes.object.isRequired,
+  post: PropTypes.object.isRequired,
 };
 
-export default CommentForm
+export default CommentForm;

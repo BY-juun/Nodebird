@@ -1,72 +1,154 @@
-import { all, fork , delay,takeLatest,put} from 'redux-saga/effects';
-import axios from 'axios'
+import { all, delay, fork, put, takeLatest } from 'redux-saga/effects';
+import axios from 'axios';
 
+import {
+  FOLLOW_FAILURE,
+  FOLLOW_REQUEST,
+  FOLLOW_SUCCESS,
+  LOG_IN_FAILURE,
+  LOG_IN_REQUEST,
+  LOG_IN_SUCCESS,
+  LOG_OUT_FAILURE,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
+  SIGN_UP_FAILURE,
+  SIGN_UP_REQUEST,
+  SIGN_UP_SUCCESS,
+  UNFOLLOW_FAILURE,
+  UNFOLLOW_REQUEST,
+  UNFOLLOW_SUCCESS,
+} from '../reducers/user';
 
-function loginAPI(data) {
-    return axios.post('/api/login',data);
+function logInAPI(data) {
+  return axios.post('/api/login', data);
 }
-
 
 function* logIn(action) {
-    try{
-        yield delay(1000);
-        //const result = yield call(logInAPI,action.data); // 이러면 parameter로 들어감
-                       //첫번째 자리 함수 그 다음부터는 parameter
-        yield put({ //put은 dispatch라고 생각
-            type : 'LOG_IN_SUCCESS',
-            //data : result.data //성공결과가 담긴다
-            data : action.data,
-        })
-    }catch(error){
-        yield put ({
-            type : 'LOG_IN_FAILURE',
-            data : error.response.data //실패결과가 담긴다
-        })
-    }
-   
-}
-
-
-function* watchLogIn() {
-
-    yield takeLatest('LOG_IN_REQUEST', logIn); //LOG_IN이라는 action이 시작될때까지 기다리겠다
+  try {
+    console.log('saga logIn');
+    // const result = yield call(logInAPI);
+    yield delay(1000);
+    yield put({
+      type: LOG_IN_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOG_IN_FAILURE,
+      error: err.response.data,
+    });
+  }
 }
 
 function logOutAPI() {
-    return axios.post('/api/logout');
+  return axios.post('/api/logout');
 }
 
 function* logOut() {
-    try{
-
-        yield delay(1000);
-        //const result = yield call(logInAPI)
-        yield put({ //put은 dispatch라고 생각
-            type : 'LOG_OUT_SUCCESS',
-        })
-    }catch(error){
-        console.error(err);
-        yield put ({
-            type : 'LOG_OUT_FAILURE',
-            error: err.response.data,//실패결과가 담긴다
-        })
-    }
-   
+  try {
+    // const result = yield call(logOutAPI);
+    yield delay(1000);
+    yield put({
+      type: LOG_OUT_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOG_OUT_FAILURE,
+      error: err.response.data,
+    });
+  }
 }
 
-//takeEvery로 하면, 실수로 버튼이 두번눌리거나 했을 때, 실제로 글이 두번올라가는 상황이 발생할 수 있다.
-//이걸 막기 위해 takeLatest
+function signUpAPI() {
+  return axios.post('/api/signUp');
+}
 
-//loginrequest 할 때, type은 loginrequest이고, data가 따로 있는데
-//이는 login함수의 parameter로 들어간다
+function* signUp() {
+  try {
+    // const result = yield call(signUpAPI);
+    yield delay(1000);
+    yield put({
+      type: SIGN_UP_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: SIGN_UP_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function followAPI() {
+  return axios.post('/api/follow');
+}
+
+function* follow(action) {
+  try {
+    // const result = yield call(followAPI);
+    yield delay(1000);
+    yield put({
+      type: FOLLOW_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: FOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function unfollowAPI() {
+  return axios.post('/api/unfollow');
+}
+
+function* unfollow(action) {
+  try {
+    // const result = yield call(unfollowAPI);
+    yield delay(1000);
+    yield put({
+      type: UNFOLLOW_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UNFOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchFollow() {
+  yield takeLatest(FOLLOW_REQUEST, follow);
+}
+
+function* watchUnfollow() {
+  yield takeLatest(UNFOLLOW_REQUEST, unfollow);
+}
+
+function* watchLogIn() {
+  yield takeLatest(LOG_IN_REQUEST, logIn);
+}
 
 function* watchLogOut() {
-    yield takeLatest('LOG_OUT_REQUEST',logOut);
+  yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
-export default function* userSage(){
-    yield all([
-        fork(watchLogIn),
-        fork(watchLogOut),
-    ])
+function* watchSignUp() {
+  yield takeLatest(SIGN_UP_REQUEST, signUp);
+}
+
+export default function* userSaga() {
+  yield all([
+    fork(watchFollow),
+    fork(watchUnfollow),
+    fork(watchLogIn),
+    fork(watchLogOut),
+    fork(watchSignUp),
+  ]);
 }
