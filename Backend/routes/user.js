@@ -1,8 +1,49 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { User } = require('../models');
-
+const { User,Post } = require('../models');
+const passport = require('passport');
+const db = require('../models');
 const router = express.Router();
+
+router.post('/login', (req,res,next) => {
+    passport.authenticate('local', (err,user,info)=>{
+        if(err){
+            console.error(err);
+            return next(err);
+        }
+        if(info){ //client error
+            res.status(401).send(info.reason);
+        }
+        return req.login(user, async(loginErr) => {
+            if (loginErr) {
+              console.error(loginErr);
+              return next(loginErr);
+            }
+            const fullUserWithoutPassword = await User.findOne({
+                where : {id : user.id},
+                attributes : {
+                    exclude : ['password']
+                },
+                include : [{
+                    model : Post, //hasMany관계여서 front에서는 Posts로 사용할 수 있다.
+                },{
+                    model : User,
+                    as : 'Followings'
+                },{
+                    model : User,
+                    as : 'Followers'
+                }]
+            });
+            return res.status(200).json(fullUserWithoutPassword);
+          });
+    })(req,res,next);
+});
+
+router.post('/logout',(req,res,next)=>{
+    req.logout();
+    req.session.destroy();
+    res.send('ok');
+})
 
 router.post('/', async (req, res, next) => {
     try { //await하는애들은 비동기니까 try catch로 감싸기

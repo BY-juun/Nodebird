@@ -19,6 +19,12 @@ const Signup = () => {
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
   const { isSigningUp, me,signUpDone, signUpError } = useSelector((state) => state.user);
+  const id = me?.id;
+  useEffect(()=>{
+    if(me && id){
+      Router.replace('/');
+    }
+  },[me,id])
 
   useEffect(() => {
     if(signUpDone){
