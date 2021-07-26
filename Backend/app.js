@@ -1,7 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const { post } = require('./routes/post');
 const db = require('./models');
-
+const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 
 const app = express();
 db.sequelize.sync()
@@ -12,9 +14,14 @@ db.sequelize.sync()
         console.error(err);
     })
 
-const postRouter = require('./routes/post');
+app.use(cors({
+    origin : true,
+}));
+app.use(express.json()); //front에서 보낸 data req.body에 넣어주는 역활
+app.use(express.urlencoded({extended : true})); //front에서 보낸 data req.body에 넣어주는 역활
 
 app.use('/post',postRouter);
+app.use('/user',userRouter);
 
 app.get('/',(req,res)=>{
     res.send("오랜만이야 backend")
