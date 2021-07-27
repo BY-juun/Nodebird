@@ -7,6 +7,9 @@ export const initialState = {
   unfollowLoading: false, // 언팔로우 시도중
   unfollowDone: false,
   unfollowError: null,
+  loadMyInfoLoading: false,
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
   logInLoading: false, // 로그인 시도중
   logInDone: false,
   logInError: null,
@@ -48,6 +51,11 @@ export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+
+
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
@@ -71,6 +79,20 @@ export const logoutRequestAction = () => ({
 
 const reducer = (state = initialState, action) => produce(state, (draft) => {
   switch (action.type) {
+    case LOAD_MY_INFO_REQUEST:
+      draft.loadMyInfoLoading = true;
+      draft.loadMyInfoDone = false;
+      draft.loadMyInfoError = null;
+      break;
+    case LOAD_MY_INFO_SUCCESS:
+      draft.loadMyInfoLoading = false;
+      draft.loadMyInfoDone = true;
+      draft.me = action.data;
+      break;
+    case LOAD_MY_INFO_FAILURE:
+      draft.loadMyInfoLoading = false;
+      draft.loadMyInfoError = action.error;
+      break;
     case FOLLOW_REQUEST:
       draft.followLoading = true;
       draft.followError = null;
@@ -103,7 +125,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.logInLoading = true;
       draft.logInError = null;
       draft.logInDone = false;
-      break; 
+      break;
     case LOG_IN_SUCCESS:
       draft.logInLoading = false;
       draft.me = action.data;
@@ -156,23 +178,23 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
     case ADD_POST_TO_ME:
       draft.me.Posts.unshift({ id: action.data });
       break;
-      // return {
-      //   ...state,
-      //   me: {
-      //     ...state.me,
-      //     Posts: [{ id: action.data }, ...state.me.Posts],
-      //   },
-      // };
+    // return {
+    //   ...state,
+    //   me: {
+    //     ...state.me,
+    //     Posts: [{ id: action.data }, ...state.me.Posts],
+    //   },
+    // };
     case REMOVE_POST_OF_ME:
       draft.me.Posts = draft.me.Posts.filter((v) => v.id !== action.data);
       break;
-      // return {
-      //   ...state,
-      //   me: {
-      //     ...state.me,
-      //     Posts: state.me.Posts.filter((v) => v.id !== action.data),
-      //   },
-      // };
+    // return {
+    //   ...state,
+    //   me: {
+    //     ...state.me,
+    //     Posts: state.me.Posts.filter((v) => v.id !== action.data),
+    //   },
+    // };
     default:
       break;
   }

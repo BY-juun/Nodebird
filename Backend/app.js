@@ -25,6 +25,7 @@ passportConfig();
 
 app.use(cors({
     origin : true,
+    credentials :true , //이걸 해줘야 cookie도 같이 보낼 수 있다.
 }));
 
 app.use(express.json()); //front에서 보낸 data req.body에 넣어주는 역활
@@ -41,17 +42,6 @@ app.use(passport.session());
 app.use('/post',postRouter);
 app.use('/user',userRouter);
 
-app.get('/',(req,res)=>{
-    res.send("오랜만이야 backend")
-});
-
-app.post('/api/post',(req,res)=>{
-    res.json({id : 1, content : 'hello'});
-});
-
-app.delete('/api/post',(req,res)=>{
-    res.json({id : 1});
-});
 
 app.listen(3065,()=>{
     console.log("서버 실행 중");
