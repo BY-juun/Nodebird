@@ -22,7 +22,6 @@ const LoginForm = () => {
   const [password, onChangePassword] = useInput('');
 
   const onSubmitForm = useCallback(() => {
-    console.log(email, password);
     dispatch({
       type: LOG_IN_REQUEST,
       data: { email, password },
