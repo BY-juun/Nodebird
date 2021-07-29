@@ -64,7 +64,7 @@ router.post('/:postId/comment',isLoggedIn, async(req,res,next)=>{
     }
 })
 
-router.patch('/:postId/like',async(req,res,next)=>{ //patch post/1/like
+router.patch('/:postId/like',isLoggedIn,async(req,res,next)=>{ //patch post/1/like
     try{
         const post = await Post.findOne({where : {id : req.params.postId}})
         if(!post){
@@ -78,7 +78,7 @@ router.patch('/:postId/like',async(req,res,next)=>{ //patch post/1/like
     }
 })
 
-router.patch('/:postId/unlike',async(req,res,next)=>{
+router.patch('/:postId/unlike',isLoggedIn,async(req,res,next)=>{
     try{
         const post = await Post.findOne({where : {id : req.params.id}})
         if(!post){
@@ -92,8 +92,17 @@ router.patch('/:postId/unlike',async(req,res,next)=>{
     }
 })
 
-router.delete('/',(req,res)=>{
-    res.json({id : 1});
+router.delete('/:postId',isLoggedIn,async(req,res,next)=>{
+    try {
+        await Post.destroy({
+            where : {id : req.params.postId},
+            UserId : req.user.id
+        });
+        res.json({PostId : parseInt(req.params.postId)});
+    }catch(err){
+        console.error(err);
+        next(err);
+    }
 });
 
 
