@@ -5,12 +5,13 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const multer = require('multer')
 const db = require('./models');
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
 const passportConfig = require('./passport');
-
+const path = require('path');
 
 dotenv.config();
 const app = express();
@@ -29,8 +30,9 @@ app.use(cors({
     credentials :true , //이걸 해줘야 cookie도 같이 보낼 수 있다.
 }));
 app.use(morgan('dev'));
-app.use(express.json()); //front에서 보낸 data req.body에 넣어주는 역활
-app.use(express.urlencoded({extended : true})); //front에서 보낸 data req.body에 넣어주는 역활
+app.use('/',express.static(path.join(__dirname,'uploads')));
+app.use(express.json()); //front에서 보낸 data req.body에 넣어주는 역활 axios에서 데이터 보낼 때 받는 역할
+app.use(express.urlencoded({extended : true})); //front에서 보낸 data req.body에 넣어주는 역활 일반 form에서 보낼 때 받는 역할
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
