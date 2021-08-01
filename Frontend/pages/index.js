@@ -7,6 +7,7 @@ import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import wrapper from "../store/configureStore";
 import { END } from 'redux-saga';
+import axios from 'axios';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
@@ -48,6 +49,12 @@ const Home = () => {
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(async(context)=>{
+  //원래 브라우저에서 cookie를 알아서 넣어주는데 , SSR시에는 브라우저 개입을 못하니까 프론트서버에서 헤더에 쿠키를 넣어서 보내줘야 한다.
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if(context.req && cookie){
+    axios.defaults.headers.Cookie = cookie;
+  }
   context.store.dispatch({
     type : LOAD_MY_INFO_REQUEST,
   })

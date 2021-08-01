@@ -32,8 +32,6 @@ export const initialState = {
   removeFollowerDone: false,
   removeFollowerError: null,
   me: null,
-  signUpData: {},
-  loginData: {},
 };
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';

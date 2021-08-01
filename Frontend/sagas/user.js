@@ -214,13 +214,13 @@ function* unfollow(action) {
   }
 }
 
-function loadUserAPI() {
+function loadMyinfoAPI() {
   return axios.get('/user');
 }
 
-function* loadUser(action) {
+function* loadMyinfo(action) {
   try {
-    const result = yield call(loadUserAPI);
+    const result = yield call(loadMyinfoAPI);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -254,8 +254,8 @@ function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
 
-function* watchLoadUser() {
-  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+function* watchLoadMyinfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyinfo);
 }
 function* watchChnageNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
@@ -280,7 +280,7 @@ export default function* userSaga() {
     fork(watchRemoveFollower),
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
-    fork(watchLoadUser),
+    fork(watchLoadMyinfo),
     fork(watchFollow),
     fork(watchUnfollow),
     fork(watchLogIn),
