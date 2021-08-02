@@ -2,7 +2,7 @@ import produce from '../util/produce';
 
 export const initialState = {
     mainPosts: [],
-    singlePost : null,
+    singlePost: null,
     imagePaths: [],
     hasMorePosts: true,
     likePostsLoading: false,
@@ -72,6 +72,15 @@ export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 
+export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
+export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
+export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
+export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
+export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
+export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
+
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
 
 export const addPost = (data) => ({
@@ -120,17 +129,23 @@ const reducer = (state = initialState, action) =>
                 draft.retweetError = action.error;
                 break;
 
+            case LOAD_USER_POSTS_REQUEST:
             case LOAD_POSTS_REQUEST:
+            case LOAD_HASHTAG_POSTS_REQUEST:
                 draft.loadPostsLoading = true;
                 draft.loadPostsDone = false;
                 draft.loadPostsError = null;
                 break;
+            case LOAD_USER_POSTS_SUCCESS:
+            case LOAD_HASHTAG_POSTS_SUCCESS:
             case LOAD_POSTS_SUCCESS:
                 draft.loadPostsLoading = false;
                 draft.loadPostsDone = true;
                 draft.mainPosts = draft.mainPosts.concat(action.data);
                 draft.hasMorePosts = draft.mainPosts.length === 10;
                 break;
+            case LOAD_USER_POSTS_FAILURE:
+            case LOAD_HASHTAG_POSTS_FAILURE:
             case LOAD_POSTS_FAILURE:
                 draft.loadPostsLoading = false;
                 draft.loadPostsError = action.error;
