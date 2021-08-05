@@ -7,6 +7,9 @@ import Head from 'next/head';
 import { SIGN_UP_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
+import wrapper from "../store/configureStore";
+import { END } from 'redux-saga';
+import axios from 'axios';
 
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState('');

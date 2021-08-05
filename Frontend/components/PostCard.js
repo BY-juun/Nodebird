@@ -11,10 +11,13 @@ import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import FollowButton from './FollowButton';
 import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
+import moment from 'moment';
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
 `;
+
+moment.locale("ko");
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -27,7 +30,7 @@ const PostCard = ({ post }) => {
     setCommentFormOpened((prev) => !prev);
   }, []);
 
- 
+
   const onLike = useCallback(() => {
     if (!id) {
       return alert('로그인이 필요합니다');
@@ -96,66 +99,75 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        title = {post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다` : null}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다` : null}
         extra={id && <FollowButton post={post} />}
       >
         {post.RetweetId && post.Retweet
           ? (
             <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />} >
+              <div style={{ float: "right" }}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
               <Card.Meta
-                avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+                avatar={(<Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
+                  <a><Avatar>{post.Retweet.User.nickname[0]}</Avatar></a>
+                </Link>)}
                 title={post.Retweet.User.nickname}
                 description={<PostCardContent postData={post.Retweet.content} />}
-                />
+              />
             </Card>
-        )
-        :(<Card.Meta
-                avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+          )
+          : (
+            <>
+              <div style={{ float: "right" }}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+              <Card.Meta
+                avatar={(<Link href={`/user/${post.User.id}`} prefetch={false}>
+                  <a><Avatar>{post.User.nickname[0]}</Avatar></a>
+                </Link>)}
                 title={post.User.nickname}
                 description={<PostCardContent postData={post.content} />}
-              />)
-      }
+              />
+            </>)
+        }
 
-            </Card>
+      </Card>
       {commentFormOpened && (
-          <>
-            <CommentForm post={post} />
-            <List
-              header={`${post.Comments ? post.Comments.length : 0} 댓글`}
-              itemLayout="horizontal"
-              dataSource={post.Comments || []}
-              renderItem={(item) => (
-                <li>
-                  <Comment
-                    author={item.User.nickname}
-                    avatar={(
-                      <Link href={{ pathname: '/user', query: { id: item.User.id } }} as={`/user/${item.User.id}`}>
-                        <a><Avatar>{item.User.nickname[0]}</Avatar></a>
-                      </Link>
-                    )}
-                    content={item.content}
-                  />
-                </li>
-              )}
-            />
-          </>
-        )}
+        <>
+          <CommentForm post={post} />
+          <List
+            header={`${post.Comments ? post.Comments.length : 0} 댓글`}
+            itemLayout="horizontal"
+            dataSource={post.Comments || []}
+            renderItem={(item) => (
+              <li>
+                <Comment
+                  author={item.User.nickname}
+                  avatar={(
+                    <Link href={`/user/${item.User.id}`} prefetch={false}>
+                      <a><Avatar>{item.User.nickname[0]}</Avatar></a>
+                    </Link>
+                  )}
+                  content={item.content}
+                />
+              </li>
+            )}
+          />
+        </>
+      )}
     </CardWrapper>
   );
 };
 
 PostCard.propTypes = {
-        post: PropTypes.shape({
-        id: PropTypes.number,
+  post: PropTypes.shape({
+    id: PropTypes.number,
     User: PropTypes.object,
     UserId: PropTypes.number,
     content: PropTypes.string,
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.any),
     Images: PropTypes.arrayOf(PropTypes.any),
-    Likers : PropTypes.arrayOf(PropTypes.any), 
-    RetweetId : PropTypes.number,
-    Retweet : PropTypes.objectOf(PropTypes.any),
+    Likers: PropTypes.arrayOf(PropTypes.any),
+    RetweetId: PropTypes.number,
+    Retweet: PropTypes.objectOf(PropTypes.any),
   }).isRequired,
 };
 

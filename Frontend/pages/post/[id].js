@@ -38,7 +38,9 @@ const Post = () => {
   );
 };
 
-// export async function getStaticPaths() {
+// export async function getStaticPaths() { 
+//미리 build해서 html로 가지고 있는데 > dynamic routing이니까
+//뭘가지고 있어야할지 모름 >> 그래서 id를 미리 정해놓는다
 //   return {
 //     paths: [
 //       { params: { id: '1' } },
@@ -66,7 +68,6 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   });
   context.store.dispatch(END);
   await context.store.sagaTask.toPromise();
-  return { props: {} };
 });
 
 export default Post;
